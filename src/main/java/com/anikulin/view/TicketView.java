@@ -1,7 +1,6 @@
 package com.anikulin.view;
 
-import java.time.LocalTime;
-import java.util.Map;
+import java.util.List;
 
 public class TicketView {
 
@@ -10,11 +9,11 @@ public class TicketView {
     private static final String PRICE_SKEWNESS_MESSAGE = "Коэффициент асимметрии цен для полета между городами  " +
             "Владивосток и Тель-Авив: ";
 
-    public void printBestTimeCarriers(Map<String, Long> carrierFasterTickets) {
+    public void printBestTimeCarriers(List<String> carrierFasterTickets) {
 
         System.out.println(BEST_TIME_CARRIERS_MESSAGE);
-        carrierFasterTickets.entrySet().forEach(time ->
-                System.out.println(time.getKey() + "=" + LocalTime.ofSecondOfDay(time.getValue())));
+        carrierFasterTickets.forEach(time ->
+                System.out.println(time));
     }
 
     public void printPriceSkewness(int averageAndMedianPricesDif) {

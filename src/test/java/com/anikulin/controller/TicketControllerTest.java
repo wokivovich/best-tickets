@@ -13,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -54,7 +53,7 @@ class TicketControllerTest {
 
         when(converter.convertTicketsDates(Mockito.any())).thenReturn(tickets);
         when(service.calculateSkewness(tickets)).thenReturn(0);
-        when(service.getMinFlyTime(tickets)).thenReturn(Map.of("ТК", 21000L));
+        when(service.getMinFlyTime(tickets)).thenReturn(List.of("Компания: ТК минимальное время полета: 05:10"));
 
         //When
         controller.getTimeAndPrice();
@@ -64,6 +63,6 @@ class TicketControllerTest {
         verify(service).calculateSkewness(tickets);
         verify(service).getMinFlyTime(tickets);
         verify(view).printPriceSkewness(0);
-        verify(view).printBestTimeCarriers(Map.of("ТК", 21000L));
+        verify(view).printBestTimeCarriers(List.of("Компания: ТК минимальное время полета: 05:10"));
     }
 }

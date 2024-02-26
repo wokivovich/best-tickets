@@ -3,25 +3,24 @@ package com.anikulin.service;
 import com.anikulin.model.Ticket;
 
 import java.time.Duration;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class TicketService {
 
-    public Map<String, Long> getMinFlyTime(List<Ticket> tickets) {
+    public List<String> getMinFlyTime(List<Ticket> tickets) {
 
         Map<String, List<Ticket>> carriersTickets = tickets.stream()
                 .collect(Collectors.groupingBy(Ticket::getCarrier));
 
-        Map<String, Long> carrierFasterTickets = carriersTickets.entrySet().stream()
-                .collect(Collectors.toMap(carrier -> carrier.getKey(),
-                        carrier -> carrier.getValue().stream().map(ticket ->
-                                        Duration.between(ticket.getDepartureDate(), ticket.getArrivalDate())
-                                                .getSeconds())
-                                .toList().stream()
-                                .min(Long::compare)
-                                .get()));
+        List<String> carrierFasterTickets = carriersTickets.entrySet()
+                .stream()
+                .map(v -> String.format("Компания: %s минимальное время полета: %s",
+                                v.getKey(),
+                                findFasterTicket(v.getValue())))
+                .collect(Collectors.toList());
 
         return carrierFasterTickets;
     }
@@ -33,9 +32,7 @@ public class TicketService {
         int average = sumPrice / countOfTickets;
         List<Integer> prices =  tickets.stream()
                 .map(ticket -> ticket.getPrice())
-                .collect(Collectors.toList())
-                .stream()
-                .sorted().collect(Collectors.toList());
+                .sorted().toList();
 
         int medianPrice = calculateMedianPrice(prices);
 
@@ -48,5 +45,13 @@ public class TicketService {
         } else {
             return (prices.get(prices.size()/2) + prices.get(prices.size()/2 - 1)) / 2;
         }
+    }
+
+    private LocalTime findFasterTicket(List<Ticket> tickets) {
+        return tickets.stream()
+                .map(ticket -> Duration.between(ticket.getDepartureDate(), ticket.getArrivalDate()).getSeconds())
+                .map(time -> LocalTime.ofSecondOfDay(time))
+                .min(LocalTime::compareTo)
+                .get();
     }
 }

@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,14 +40,13 @@ class TicketServiceTest {
                 .build();
         List<Ticket> tickets = List.of(ticket1, ticket2);
 
-        String expectedCarrier = "ТК";
-        long expectedTime = 21000L;
+        List<String> expected = List.of("Компания: ТК минимальное время полета: 05:50");
 
         //When
-        Map<String, Long> actual = ticketService.getMinFlyTime(tickets);
+        List<String> actual = ticketService.getMinFlyTime(tickets);
 
         //Then
-        assertThat(actual).containsEntry(expectedCarrier, expectedTime);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
